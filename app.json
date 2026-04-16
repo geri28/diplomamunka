@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "menj",
-    "slug": "menj",
+    "scheme": "Indoor Navigation App",
+    "name": "Indoor Navigation App",
+    "slug": "indoor-navigation-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "menj",
     "userInterfaceStyle": "automatic",
+    "primaryColor": "#095e15",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true
@@ -19,7 +20,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.geri112.indoornavigationapp"
     },
     "web": {
       "output": "static",
@@ -38,11 +40,18 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "91630d45-da1c-46d3-9465-d392af7288ab"
+      }
     }
   }
 }

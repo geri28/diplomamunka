@@ -1,24 +1,72 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs, usePathname } from "expo-router";
+import { ImageBackground, StyleSheet } from "react-native";
+import { themeColor } from "../src/controller/utils/constants";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+const RootLayout = () => {
+  const pathname = usePathname();
 
-export const unstable_settings = {
-  anchor: '(tabs)',
+  const isSchedulePage = pathname.includes("schedule");
+
+  const logoOpacity = isSchedulePage ? 0.45 : 1;
+  return (
+    <ImageBackground
+      source={require("../assets/images/udlogo.png")}
+      resizeMode="contain"
+      style={style.backgroundImage}
+      imageStyle={[style.backgroundImageContent, { opacity: logoOpacity }]}
+    >
+      <Tabs
+        screenOptions={{
+          sceneStyle: { backgroundColor: "transparent" },
+          headerTitleAlign: "center",
+          headerStyle: { backgroundColor: themeColor.primary },
+          headerTintColor: themeColor.secondory,
+          tabBarStyle: {
+            backgroundColor: themeColor.primary,
+            borderTopWidth: 0,
+          },
+          tabBarActiveTintColor: themeColor.secondory,
+          tabBarInactiveTintColor: themeColor.defaultColor,
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Debreceni Egyetem",
+            tabBarLabel: "Térkép",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="map" size={24} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="schedule"
+          options={{
+            title: "Órarendem",
+            tabBarLabel: "Órarend",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="calendar" size={24} color={color} />
+            ),
+          }}
+        />
+      </Tabs>
+    </ImageBackground>
+  );
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+export default RootLayout;
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
-}
+const style = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    backgroundColor: themeColor.defaultColor,
+  },
+  backgroundImageContent: {
+    opacity: 1,
+    width: "60%",
+    height: "40%",
+    left: "21%",
+    top: "30%",
+  },
+});
