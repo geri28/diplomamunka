@@ -53,7 +53,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/icon.png",
+          "icon": "./assets/images/icon.png",
           "color": "#fee507",
           "defaultChannel": "default"
         }
