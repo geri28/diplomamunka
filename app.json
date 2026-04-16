@@ -19,9 +19,18 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
+      "permissions": [
+        "NOTIFICATIONS",
+        "SCHEDULE_EXACT_ALARM",
+        "USE_EXACT_ALARM",
+        "VIBRATE"
+      ],
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.geri112.indoornavigationapp"
+      "package": "com.geri112.indoornavigationapp",
+      "ios": {
+        "supportsTablet": true
+      }
     },
     "web": {
       "output": "static",
@@ -39,6 +48,14 @@
           "dark": {
             "backgroundColor": "#000000"
           }
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#fee507",
+          "defaultChannel": "default"
         }
       ],
       "@react-native-community/datetimepicker"

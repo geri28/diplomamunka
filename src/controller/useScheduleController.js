@@ -68,37 +68,67 @@ export const useScheduleController = () => {
 
   useEffect(() => {
     const requestPermissions = async () => {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Nem adtak engedélyt az értesítésekre!");
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+
+      if (finalStatus !== "granted") {
+        Alert.alert(
+          "Figyelem",
+          "Értesítési engedély nélkül nem kapsz értesítést az órák előtt!",
+        );
       }
     };
+
     requestPermissions();
+
+    const loadSchedule = async () => {
+      try {
+        const savedSchedule = await AsyncStorage.getItem("schedule");
+        if (savedSchedule) {
+          setSchedule(JSON.parse(savedSchedule));
+        }
+      } catch (e) {
+        console.log("Hiba a betöltésnél:", e);
+      }
+    };
+
+    loadSchedule();
   }, []);
 
   const scheduleClassNotification = async (classData) => {
     const dayMap = {
-      Hétfő: 2,
-      Kedd: 3,
-      Szerda: 4,
-      Csütörtök: 5,
-      Péntek: 6,
+      [days.monday]: 2,
+      [days.tuesday]: 3,
+      [days.wednesday]: 4,
+      [days.thursday]: 5,
+      [days.friday]: 6,
     };
-    const weekday = dayMap[classData.day];
+    let weekday = dayMap[classData.day];
 
     const [hours, minutes] = classData.start.split(":").map(Number);
     let triggerHour = hours - 1;
     let triggerMinute = minutes;
 
-    if (triggerHour < 0) triggerHour += 24;
+    if (triggerHour < 0) {
+      triggerHour += 24;
+      weekday = weekday === 1 ? 7 : weekday - 1;
+    }
 
     const notificationId = await Notifications.scheduleNotificationAsync({
       content: {
         title: "Óra kezdődik hamarosan!",
-        body: `${classData.title} kezdődik 1 óra múlva (${classData.start}-kor). Ne felejts el elindulni!`,
+        body: `${classData.title} kezdődik 1 óra múlva (${classData.start}-kor)!`,
         sound: true,
       },
       trigger: {
+        type: "weekly",
+        channelId: "default",
         weekday: weekday,
         hour: triggerHour,
         minute: triggerMinute,
@@ -113,7 +143,7 @@ export const useScheduleController = () => {
     try {
       await AsyncStorage.setItem("@my_schedule", JSON.stringify(newSchedule));
     } catch (e) {
-      console.error("Hiba a mentés során", e);
+      console.log("Hiba a mentés során", e);
     }
   };
 
@@ -240,6 +270,16 @@ export const useScheduleController = () => {
     setSchedule(updatedSchedule);
     saveScheduleToDB(updatedSchedule);
     closeModal();
+
+    const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+    console.log("--- AKTÍV ÉRTESÍTÉSEK A RENDSZERBEN ---");
+    console.log(`Összesen ${scheduled.length} db értesítés van beállítva.`);
+    scheduled.forEach((notif) => {
+      console.log(`Értesítés azonosítója: ${notif.identifier}`);
+      console.log(
+        `Nap ${notif.trigger.weekday} | Időpont: ${notif.trigger.hour}:${notif.trigger.minute}`,
+      );
+    });
   };
 
   const deleteClass = async () => {
