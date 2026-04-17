@@ -13,10 +13,10 @@ Notifications.setNotificationHandler({
 });
 
 if (Platform.OS === "android") {
-  Notifications.setNotificationChannelAsync("default", {
+  Notifications.setNotificationChannelAsync("default_v2", {
     name: "Órarend értesítések",
     importance: Notifications.AndroidImportance.MAX,
-    vibrationPattern: [0, 250, 250, 250],
+    vibrationPattern: [0, 100, 100, 200, 150, 400],
     lightColor: "#fee507",
   });
 }
@@ -128,7 +128,7 @@ export const useScheduleController = () => {
       },
       trigger: {
         type: "weekly",
-        channelId: "default",
+        channelId: "default_v2",
         weekday: weekday,
         hour: triggerHour,
         minute: triggerMinute,
